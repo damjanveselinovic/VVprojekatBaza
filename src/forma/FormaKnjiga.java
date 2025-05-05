@@ -5,6 +5,7 @@
 package forma;
 
 import java.util.List;
+import java.util.Random;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import kontroler.Kontroler;
@@ -39,6 +40,8 @@ public class FormaKnjiga extends javax.swing.JDialog {
             jComboBoxAutor.setSelectedItem(knjigaZaIzmenu.getAutor());
             jComboBoxZanr.setSelectedItem(knjigaZaIzmenu.getZanr());
             jButtonDodaj.setVisible(false);
+            
+            
             
         }
         else{
@@ -177,21 +180,34 @@ public class FormaKnjiga extends javax.swing.JDialog {
         // TODO add your handling code here:
         
         String naziv=jTextFieldNazivKnjige.getText();
+        if (naziv==null || naziv.isEmpty() || naziv.trim().length()<3){
+            JOptionPane.showMessageDialog(this, "Knjiga ne zadovoljava standarde po nazivu", "Greska", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         String isbn=jTextFieldISBN.getText();
         int godIzdanja = 0;
         try{ 
             godIzdanja=Integer.parseInt(jTextFieldGodIzdanja.getText());
+            if(godIzdanja <1800 || godIzdanja>2024){
+                JOptionPane.showMessageDialog(this, "Knjiga ne zadovoljava standarde po godini", "Greska", JOptionPane.ERROR_MESSAGE);
+            }
         }
         catch(NumberFormatException e){
             JOptionPane.showMessageDialog(this, "Godina izdanja mora biti broj", "Greska", JOptionPane.WARNING_MESSAGE );
         }
         ZanrKnjige zanr=(ZanrKnjige) jComboBoxZanr.getSelectedItem();
         Autor autor=(Autor) jComboBoxAutor.getSelectedItem();
-        Knjiga novaKnjiga=new Knjiga(naziv, autor, isbn, godIzdanja, zanr);
+        
+        Random rand=new Random();
+        int id=101+rand.nextInt(Integer.MAX_VALUE-100);
+        Knjiga novaKnjiga=new Knjiga(id,naziv, autor, isbn, godIzdanja, zanr);
+        
+        
         
         Kontroler.getInstance().dodajKnjigu(novaKnjiga);
+        
         gf.osveziTabelu();
-        JOptionPane.showMessageDialog(this, "Knjiga je uspesno dodata", "Uspeh", JOptionPane.OK_OPTION);
+        JOptionPane.showMessageDialog(this, "Knjiga je uspesno dodata", "Uspeh", JOptionPane.INFORMATION_MESSAGE);
         this.dispose();
         
         
@@ -222,6 +238,8 @@ public class FormaKnjiga extends javax.swing.JDialog {
         
         knjigaZaIzmenu.setIme(naziv);
         knjigaZaIzmenu.setZanr(zanr);
+        
+        kontroler.azurirajKnjiguUBazi(knjigaZaIzmenu);
         gf.osveziTabelu();
         JOptionPane.showMessageDialog(this, "Knjiga je izmenjena", "Uspeh", JOptionPane.INFORMATION_MESSAGE );
         this.dispose();
@@ -252,7 +270,8 @@ public class FormaKnjiga extends javax.swing.JDialog {
 
     private void popuniComboBoxAutorima() {
         jComboBoxAutor.removeAllItems();
-        List<Autor> autori=kontroler.getListaAutora();
+        List<Autor> autori=kontroler.getListaAutoraIzBaze();
+        //List<Autor> autori=kontroler.getListaAutora();
         for(Autor autor: autori){
             jComboBoxAutor.addItem(autor);
         }

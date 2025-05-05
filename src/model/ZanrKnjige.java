@@ -9,9 +9,10 @@ package model;
  * @author damja
  */
 public enum ZanrKnjige {
-    ROMAN,
+    Roman,
     POEZIJA,
     ISTORIJSKI,
     NAUCNA_FANTASTIKA,
-    DETEKTIVSKI;
+    DETEKTIVSKI,
+    Romantika;
 }

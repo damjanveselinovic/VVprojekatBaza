@@ -10,6 +10,7 @@ package model;
  */
 public class Knjiga {
     
+   private int id;
    private String ime;
    private Autor autor;
    private String ISBN;
@@ -23,6 +24,20 @@ public class Knjiga {
         this.godinaIzdanja = godinaIzdanja;
         this.zanr = zanr;
     }
+
+    public Knjiga(int id, String ime, Autor autor, String ISBN, int godinaIzdanja, ZanrKnjige zanr) {
+        this.id = id;
+        this.ime = ime;
+        this.autor = autor;
+        this.ISBN = ISBN;
+        this.godinaIzdanja = godinaIzdanja;
+        this.zanr = zanr;
+    }
+    
+    
+
+   
+    
 
     
    
@@ -68,6 +83,16 @@ public class Knjiga {
     public void setZanr(ZanrKnjige zanr) {
         this.zanr = zanr;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+    
+    
     
 
     @Override

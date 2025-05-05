@@ -4,6 +4,7 @@
  */
 package forma;
 
+import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import kontroler.Kontroler;
@@ -23,7 +24,8 @@ public class GlavnaForma extends javax.swing.JFrame {
         initComponents();
         kontroler=Kontroler.getInstance();
         
-        ModelTabeleKnjige modelTabele=new ModelTabeleKnjige(kontroler.getListaKnjiga());
+        ModelTabeleKnjige modelTabele=new ModelTabeleKnjige(kontroler.ucitajListuKnjigaIzBaze());
+       // ModelTabeleKnjige modelTabele=new ModelTabeleKnjige(kontroler.getListaKnjiga());
         jTableKnjiga.setModel(modelTabele);
     }
 
@@ -105,6 +107,11 @@ public class GlavnaForma extends javax.swing.JFrame {
         jCheckBoxNauciCasopis.setText("Naucni Casopis");
 
         jButtonFiltriraj.setText("Filtriraj");
+        jButtonFiltriraj.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonFiltrirajActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -188,8 +195,10 @@ public class GlavnaForma extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Morate selektovati knjigu koju zelite obrisati", "Upozorenje", JOptionPane.WARNING_MESSAGE);
             return;
         } else{
+            ModelTabeleKnjige mtk=(ModelTabeleKnjige) jTableKnjiga.getModel();
+            int id=mtk.getListaKnjiga().get(selectedRed).getId();
             Kontroler kontroler=Kontroler.getInstance();
-            kontroler.obrisiKnjigu(selectedRed);
+            kontroler.obrisiKnjigu(id);
         }
         osveziTabelu();
         
@@ -212,46 +221,63 @@ public class GlavnaForma extends javax.swing.JFrame {
             return;
         }
         
-        Knjiga selektovanaKnjiga=kontroler.getInstance().getListaKnjiga().get(selectedRed);
+        Knjiga selektovanaKnjiga=kontroler.getInstance().ucitajListuKnjigaIzBaze().get(selectedRed);
  
         FormaKnjiga fk=new FormaKnjiga(this, true, selektovanaKnjiga);
         fk.setVisible(true);
     }//GEN-LAST:event_jButtonIzmeniActionPerformed
 
+    private void jButtonFiltrirajActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFiltrirajActionPerformed
+        // TODO add your handling code here:
+        String naziv=jTextFieldNaziv.getText();
+        String autor=jTextFieldAutor.getText();
+        
+        List<Knjiga> filtriranaLista=kontroler.filtriraj(autor,naziv);
+        
+      //  List<Knjiga> filtriranaLista2=kontroler.filtriraj2(autor,naziv);
+        
+        
+        ModelTabeleKnjige mtk=new ModelTabeleKnjige(filtriranaLista);
+        jTableKnjiga.setModel(mtk);
+                
+        
+        
+    }//GEN-LAST:event_jButtonFiltrirajActionPerformed
+
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+ //   public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(GlavnaForma.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(GlavnaForma.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(GlavnaForma.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(GlavnaForma.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
+  //      try {
+  //          for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+  //              if ("Nimbus".equals(info.getName())) {
+  //                  javax.swing.UIManager.setLookAndFeel(info.getClassName());
+  //                  break;
+  //              }
+  //          }
+  //      } catch (ClassNotFoundException ex) {
+  //          java.util.logging.Logger.getLogger(GlavnaForma.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+  //      } catch (InstantiationException ex) {
+  //          java.util.logging.Logger.getLogger(GlavnaForma.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+  //      } catch (IllegalAccessException ex) {
+  //          java.util.logging.Logger.getLogger(GlavnaForma.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+  //      } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+  //          java.util.logging.Logger.getLogger(GlavnaForma.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+  //      }
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new GlavnaForma().setVisible(true);
-            }
-        });
-    }
+  //      java.awt.EventQueue.invokeLater(new Runnable() {
+  ///          public void run() {
+  //              new GlavnaForma().setVisible(true);
+  //          }
+  //      });
+  //  }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonDodaj;
@@ -271,7 +297,10 @@ public class GlavnaForma extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     void osveziTabelu() {
-       ModelTabeleKnjige modelTabele=(ModelTabeleKnjige) jTableKnjiga.getModel();
-       modelTabele.osveziPodatke();
+       //ModelTabeleKnjige modelTabele=(ModelTabeleKnjige) jTableKnjiga.getModel();
+       //modelTabele.osveziPodatke();
+       ModelTabeleKnjige modelTabele=new ModelTabeleKnjige(kontroler.ucitajListuKnjigaIzBaze());
+       // ModelTabeleKnjige modelTabele=new ModelTabeleKnjige(kontroler.getListaKnjiga());
+        jTableKnjiga.setModel(modelTabele);
     }
 }
